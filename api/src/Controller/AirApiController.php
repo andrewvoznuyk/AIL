@@ -54,7 +54,7 @@ class AirApiController extends AbstractController
      * @throws TransportExceptionInterface
      */
     #[Route('load-airport-data', name: 'load_airport_data', methods: ["POST","GET"])]
-    public function loadAirports(Request $request): JsonResponse
+    public function loadAirports(): JsonResponse
     {
         if (in_array(User::ROLE_ADMIN, $this->getUser()->getRoles())) {
             return new JsonResponse("404", Response::HTTP_NOT_FOUND);
@@ -65,8 +65,15 @@ class AirApiController extends AbstractController
         return new JsonResponse([], Response::HTTP_OK);
     }
 
-    #[Route('load-aircraft-data', name: 'load_aircraft_data', methods: ["POST","GET"])]
-    public function loadAircrafts(Request $request): JsonResponse
+    /**
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws ExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ClientExceptionInterface
+     */
+    #[Route('load-aircraft-data', name: 'load_aircraft_data', methods: ["POST", "GET"])]
+    public function loadAircrafts(): JsonResponse
     {
         if (in_array(User::ROLE_ADMIN, $this->getUser()->getRoles())) {
             return new JsonResponse("404", Response::HTTP_NOT_FOUND);
