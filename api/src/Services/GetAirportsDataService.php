@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Entity\AircraftModel;
 use App\Entity\Airport;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -69,7 +70,7 @@ class GetAirportsDataService
 
         $airportData = $requestData['rows'];
 
-        for ($i = 0; $i < count($airportData); $i++) {
+        for ($i = 0; $i < count($airportData) - 1; $i++) {
             $airport = new Airport();
 
             if (!is_double($airportData[$i]['lon']) or !is_double($airportData[$i]['lat'])) {
@@ -81,8 +82,11 @@ class GetAirportsDataService
             $errors = $this->validator->validate($airportData[$i]);
 
             $this->entityManager->persist($airport);
-            $this->entityManager->flush($airport);
         }
+        if (count($errors) != 0){
+            throw new Exception();
+        }
+        $this->entityManager->flush();
     }
 
     /**
@@ -101,10 +105,8 @@ class GetAirportsDataService
                 'X-RapidAPI-Host' => 'airplanesdb.p.rapidapi.com']
         ]);
 
-        $statusCode = $response->getStatusCode();
         $content = $response->getContent();
         $requestData = json_decode($content, true);
-
         for ($i = 0; $i < count($requestData); $i++) {
             $aircraft = new AircraftModel();
 
@@ -128,7 +130,10 @@ class GetAirportsDataService
             $errors = $this->validator->validate($requestData[$i]);
 
             $this->entityManager->persist($aircraft);
-            $this->entityManager->flush($aircraft);
         }
+        if (count($errors) != 0){
+            throw new Exception("New error");
+        }
+        $this->entityManager->flush();
     }
 }

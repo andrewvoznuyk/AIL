@@ -2,17 +2,9 @@
 
 namespace App\Action;
 
-use App\Entity\Airport;
-use App\Entity\Company;
-use App\Entity\User;
 use App\Services\GetAirportsDataService;
-use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -21,6 +13,7 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class GetAirportApiDataAction
 {
+
     /**
      * @var GetAirportsDataService
      */
@@ -35,18 +28,18 @@ class GetAirportApiDataAction
         $this->getAirportsData = $getAirportsData;
     }
 
-
     /**
-     * @throws TransportExceptionInterface
-     * @throws ServerExceptionInterface
+     * @throws ClientExceptionInterface
      * @throws ExceptionInterface
      * @throws RedirectionExceptionInterface
-     * @throws ClientExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
      */
-    public function __invoke(Airport $data ) : Airport
+    public function __invoke(): JsonResponse
     {
         $this->getAirportsData->airportsApiParse();
 
-        return $data;
+        return new JsonResponse(ResponseAlias::HTTP_OK);
     }
+
 }

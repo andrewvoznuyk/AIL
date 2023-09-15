@@ -104,4 +104,5 @@ class RegistrationController extends AbstractController
 
         return $user;
     }
+
 }

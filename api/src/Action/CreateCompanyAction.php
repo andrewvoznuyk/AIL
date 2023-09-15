@@ -8,6 +8,7 @@ use Symfony\Component\Security\Core\Security;
 
 class CreateCompanyAction
 {
+
     /**
      * @var Security
      */
@@ -16,7 +17,7 @@ class CreateCompanyAction
     /**
      * @param Security $security
      */
-    public function __construct( Security $security )
+    public function __construct(Security $security)
     {
         $this->security = $security;
     }
@@ -25,7 +26,7 @@ class CreateCompanyAction
      * @param Company $data
      * @return Company
      */
-    public function __invoke( Company $data ) : Company
+    public function __invoke(Company $data): Company
     {
         $user = $this->security->getUser();
 
@@ -37,4 +38,5 @@ class CreateCompanyAction
 
         return $data;
     }
+
 }
