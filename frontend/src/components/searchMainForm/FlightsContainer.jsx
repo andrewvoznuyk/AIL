@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { responseStatus } from "../../utils/consts";
 import { Typography } from "@mui/material";
@@ -27,6 +27,14 @@ const FlightsContainer = () => {
     totalPageCount: null,
     itemsPerPage: 10
   });
+
+  const [cachedItems, setCachedItems] = useState([])
+
+  useEffect(() => {
+    const userLoc = JSON.parse(localStorage.getItem('flights'));
+    setCachedItems(userLoc);
+  }, []);
+
   const fetchProducts = () => {
     let filterUrl = fetchFilterData(filterData);
     navigate(filterUrl);
@@ -34,7 +42,11 @@ const FlightsContainer = () => {
     axios.get("/api/find-way" + filterUrl + "&itemsPerPage=" + paginationInfo.itemsPerPage, userAuthenticationConfig()
     ).then(response => {
       if (response.status === responseStatus.HTTP_OK && response.data) {
-        setFlights(response.data);
+        localStorage.setItem('flights',  JSON.stringify(response.data));
+        if (response.data) {
+          setFlights(response.data);
+        }
+        setCachedItems(JSON.parse(localStorage.getItem('flights')));
         setPaginationInfo({
           ...paginationInfo,
           totalItems: response.data["hydra:totalItems"],
@@ -47,14 +59,15 @@ const FlightsContainer = () => {
     });
   };
 
+
+
   return (
     <>
       <Typography variant="h4" component="h1" mt={1}>
         Search Tickets
       </Typography>
       <FlightsFilter filterData={filterData} setFilterData={setFilterData} fetchProducts={fetchProducts} />
-
-      <FlightsList flights={flights} />
+      <FlightsList flights={!cachedItems ? flights : cachedItems} />
     </>
   );
 
