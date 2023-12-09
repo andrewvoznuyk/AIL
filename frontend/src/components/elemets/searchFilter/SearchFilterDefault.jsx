@@ -23,6 +23,7 @@ const SearchFilterDefault = ({
       defaultValue={defaultValue}
       variant="filled"
       onChange={onChangeFilterData}
+      placeholder={inputLabel}
     />
   </>;
 };
